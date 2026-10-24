@@ -7,13 +7,11 @@ public class odunc {
     private int uyeNo;
     private int kitapNo;
     private LocalDate bekleneneIade;
-    private oduncDurumu durumu;
 public odunc(int oduncId, int kopyaNo, int uyeNo,int kitapNo, LocalDate bekleneneIade, oduncDurumu durumu) {
         this.oduncId = oduncIdno++;
         this.kopyaNo = kopyaNo;
         this.uyeNo = uyeNo;
         this.kitapNo=kitapNo;
         this.bekleneneIade = bekleneneIade;
-        this.durumu = durumu;
-    }
+        }
 }
