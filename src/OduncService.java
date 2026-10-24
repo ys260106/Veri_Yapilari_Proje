@@ -19,8 +19,8 @@ public class OduncService {
     }
 
     // kitap iade alma ve sıradakine ayırma
-    public void iadeAl(int oduncId,int kitapNo) {
-      System.out.println(oduncId+" oduncidli "+kitapNo+" numaralı kitabın iadesi alınmıştır");
+    public void iadeAl(int uyeNo,int kitapNo) {
+      System.out.println(uyeNo+" numaralı kişi "+kitapNo+" numaralı kitabın iadesini yapmıştır");
     }
 
     // kitap almak icin sıraya girme
@@ -31,10 +31,5 @@ public class OduncService {
     // sıradan vazgeçme veyaa silme
     public void beklemeTalebiSil(int talepId) {
      System.out.println(talepId+"numaralı talep silinmiştir"); 
-    }
-
-    // tüm listeye alma
-    public ArrayList<odunc> getOduncListesi() {
-        return null;
     }
 }
