@@ -10,5 +10,5 @@ public odunc(int oduncId, int kopyaNo, int uyeNo,int kitapNo, LocalDate beklenen
         this.uyeNo = uyeNo;
         this.kitapNo=kitapNo;
         this.bekleneneIade = bekleneneIade;
- }
+  }
 }

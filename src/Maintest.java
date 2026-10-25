@@ -7,5 +7,5 @@ public class Maintest {
      servis.beklemeTalebiOlustur(2, 200, 1);
      servis.iadeAl(1, 200);
      servis.beklemeTalebiSil(1);
-         }
+      }
 }

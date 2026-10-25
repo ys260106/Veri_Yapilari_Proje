@@ -9,9 +9,6 @@ public class OduncServisi {
     private HashMap<Integer, Queue<beklemeTalebi>> beklemeKuyruklari;//Her kitabın bekleme sırası var hashamap ile o sıraya erisiyorum queue ilede ilk gelen ilk alıyor
     private HashMap<Integer, Integer> ayirma;//kitapı bekleyen kişiye ayırmayı saglar
 
-    public OduncServisi() {
-    }
-
     // kitap odunc verme kontrolu
     public void oduncVer(int uyeNo,int kitapNo,int kopyaNo, LocalDate beklenenIadeTarihi) {
       System.out.println(uyeNo+" numaralı kişi "+kitapNo+" numaralı kitabın "+kopyaNo+" kopyasını ödünç almıştır");
@@ -30,5 +27,5 @@ public class OduncServisi {
     // sıradan vazgeçme veyaa silme
     public void beklemeTalebiSil(int talepId) {
      System.out.println(talepId+"numaralı talep silinmiştir"); 
-     }
+      }
 }

@@ -8,5 +8,5 @@ public class beklemeTalebi {
       this.talepId=talepId++;
       this.kopyaNo=kopyaNo;
       this.uyeNo=uyeNo;
-   }
+     }
 }
