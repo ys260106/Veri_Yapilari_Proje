@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Queue;
 
 public class OduncServisi {
-    // Masadaki kayıtlar ve listeler
+
     private ArrayList<odunc> oduncListesi;//Sınırsız bir odunc sırası elde edilir
     private HashMap<Integer, Queue<beklemeTalebi>> beklemeKuyruklari;//Her kitabın bekleme sırası var hashamap ile o sıraya erisiyorum queue ilede ilk gelen ilk alıyor
     private HashMap<Integer, Integer> ayirma;//kitapı bekleyen kişiye ayırmayı saglar
