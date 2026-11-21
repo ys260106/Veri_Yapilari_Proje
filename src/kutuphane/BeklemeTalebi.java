@@ -12,12 +12,14 @@ public class BeklemeTalebi {
     private int uyeNo;   // Sırada bekleyen üye
     private int kitapNo; // Beklenen kitap
     private int kopyaNo; // Beklenen kopyanın kayıt numarası
+    public BeklemeTalebi sonraki; // Kuyrukta bir sonraki talep (yoksa null)
 
     public BeklemeTalebi(int uyeNo, int kitapNo, int kopyaNo) {
         this.talepId = sayac++; // Önce mevcut sayacı ata, sonra bir artır
         this.uyeNo = uyeNo;
         this.kitapNo = kitapNo;
         this.kopyaNo = kopyaNo;
+        this.sonraki = null; // Yeni talep henüz bir kuyruğa bağlı değil
     }
 
     public int getTalepId() {

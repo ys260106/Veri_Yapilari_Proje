@@ -22,7 +22,7 @@ public class Odunc {
         this.beklenenIade = beklenenIade;
         this.iadeEdildi = false; // Yeni ödünç alınan kitap henüz iade edilmemiştir
     }
-
+// Kimlik bilgileri (oduncId, kopyaNo, uyeNo, kitapNo) değişmediği için sadece getter metotları eklendi.
     public int getOduncId() {
         return oduncId;
     }
@@ -47,11 +47,11 @@ public class Odunc {
         return iadeEdildi;
     }
 
-    /** Kitap geri geldiğinde çağrılır. */
+    // Bu metot, ödünç alınan kitabın iade edildiğini belirtir.
     public void iadeEt() {
         this.iadeEdildi = true;
     }
-
+    // toString metodu ile ödünç bilgileri ekrana yazdırılabilir.
     @Override
     public String toString() {
         return "Ödünç No: " + oduncId + " | Üye: " + uyeNo + " | Kitap: " + kitapNo
