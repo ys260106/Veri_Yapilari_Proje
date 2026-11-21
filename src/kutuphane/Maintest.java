@@ -1,3 +1,5 @@
+package kutuphane;
+
 import java.time.LocalDate;
 public class Maintest {
     public static void main(String[] args) {
