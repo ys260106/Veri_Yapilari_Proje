@@ -64,7 +64,7 @@ classDiagram
 ```mermaid
 classDiagram
     class SorguSistemi {
-        <<Yusuf - Sorgulama>>
+        Yusuf - Sorgulama
         -KendiHashMap kitapAdinaGore
         -KendiHashMap yazaraGore
         -KendiHashMap uyeNoGore
@@ -75,7 +75,7 @@ classDiagram
     }
 
     class UyeListesi {
-        <<Muhammed K - Kayit/Silme>>
+        Muhammed K - Kayit/Silme
         -Uye bas
         -Uye son
         -int boyut
@@ -86,7 +86,7 @@ classDiagram
     }
 
     class OduncServisi {
-        <<Muhammed F - Odunc/Iade>>
+        Muhammed F - Odunc/Iade
         -KendiHashMap kuyruklar
         -int sonOduncId
         +oduncVer(int, int, int) Odunc
@@ -104,7 +104,7 @@ classDiagram
     }
 
     class KutupHaneSiralama {
-        <<Omer - Siralama>>
+        Omer - Siralama
         +basligaGoreSirala(List) void
         +yilaGoreSirala(List) void
         +tariheGoreSirala(List) void
@@ -117,23 +117,15 @@ classDiagram
 
 ```mermaid
 graph TD
-    A["SorguSistemi<br/>Yusuf<br/>HashMap + ArrayList"] -->|arar| K[["Kitap"]]
-    B["UyeListesi<br/>Muhammed K<br/>Cift Yonlu Bagli Liste"] -->|tutar| U[["Uye"]]
-    C["OduncServisi<br/>Muhammed F<br/>Kuyruk + HashMap"] -->|tutar| O[["Odunc"]]
-    C --> Q[Kuyruk]
-    Q --> BT[BeklemeTalebi]
+    A["SorguSistemi<br/>Yusuf<br/>HashMap + ArrayList"] -->|arar| K["Kitap"]
+    B["UyeListesi<br/>Muhammed K<br/>Cift Yonlu Bagli Liste"] -->|tutar| U["Uye"]
+    C["OduncServisi<br/>Muhammed F<br/>Kuyruk + HashMap"] -->|tutar| O["Odunc"]
+    C --> Q["Kuyruk"]
+    Q --> BT["BeklemeTalebi"]
     D["KutupHaneSiralama<br/>Omer<br/>Siralama Algoritmalari"] -.->|sirala| K
     D -.->|sirala| O
     A -.->|uyeNo ile eris| U
     C -.->|uyeNo ile eris| U
-
-    style A fill:#aed6f1
-    style B fill:#a9dfbf
-    style C fill:#f9e79f
-    style D fill:#f5b7b1
-    style K fill:#d7bde2
-    style U fill:#d7bde2
-    style O fill:#d7bde2
 ```
 
 ---
