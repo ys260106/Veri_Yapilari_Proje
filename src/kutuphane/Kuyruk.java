@@ -17,7 +17,7 @@ public class Kuyruk {
         boyut = 0;
     }
 
-    // Talebi kuyruğun sonuna ekler: O(1)
+    // Talebi kuyruğun sonuna ekler
     public void kuyrugaEkle(BeklemeTalebi talep) {
         talep.sonraki = null;    // Sona eklenen talebin arkasında eleman yok
         if (bosMu()) {           // Kuyruk boşsa
@@ -50,7 +50,7 @@ public class Kuyruk {
         return bas;
     }
 
-    // Kuyruğun boş olup olmadığını döndürür
+    // Kuyruğun boş olup olmadığını döndürür burada returnda if (bas == null) ile de kontrol edilir
     public boolean bosMu() {
         return bas == null;
     }
