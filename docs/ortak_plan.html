@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VY-007 Ortak Sınıf Planı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* VOICE: net, teknik ekip belgesi — karar önce, gerekçe kısa
+   IDEA: sınıfta dağıtılan basılı UML föyü: renkli kutular = kişi
+   PICTURE: katmanlı sınıf diyagramı, sahibine göre renkli
+   COLOUR/TYPE: gök mavisi bant, mürekkep #10223a, turuncu vurgu; Outfit + Inter + JetBrains Mono
+   LAYOUT: bant (sonuç + rakamlar) → diyagram → kişiler → sözleşme → kartlar → plan */
+:root{color-scheme:light dark;
+ --bg:light-dark(#ffffff,#0b1726);--ink:light-dark(#10223a,#e6eef7);--mut:light-dark(#4a5d74,#9fb2c8);
+ --line:light-dark(#dbe5ef,#22384f);--soft:light-dark(#f3f8fc,#10233a);
+ --sky:light-dark(#4fb3e8,#163d5c);--skyink:light-dark(#0b2238,#e6f3fc);--acc:#ff7a1a}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Outfit,Inter,sans-serif;font-weight:600;line-height:1.1;text-wrap:balance;margin:0}
+h1{font-size:clamp(32px,5vw,50px)}h2{font-size:clamp(24px,3vw,32px);margin-bottom:10px}h3{font-size:19px}
+code,pre,.uml{font-family:"JetBrains Mono",ui-monospace,monospace}
+code{font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.band{padding:clamp(28px,4vw,56px) max(5vw,16px)}.in{max-width:1240px;margin:0 auto}
+.top{background:var(--sky);color:var(--skyink)}
+.top p.lead{font-size:18px;max-width:62ch;margin:14px 0 0}
+.nums{display:flex;flex-wrap:wrap;gap:14px 40px;margin-top:26px}
+.nums div{font-size:14px}.nums b{display:block;font:600 clamp(28px,4vw,40px)/1 Outfit,sans-serif}
+.nums .bad b{color:light-dark(#b23a00,#ffb17a)}
+nav.scroll{display:flex;gap:6px;overflow-x:auto;padding:10px max(5vw,16px);border-bottom:1px solid var(--line);background:var(--bg)}
+nav a{flex:none;color:var(--ink);text-decoration:none;font-size:14px;padding:8px 12px;border-radius:999px;border:1px solid var(--line)}
+nav a:hover,nav a:focus-visible{border-color:var(--acc);outline:none}
+@media(min-width:900px){nav.scroll{position:sticky;top:0;z-index:5}}
+html{scroll-padding-top:72px}
+.intro{color:var(--mut);max-width:70ch;margin:0 0 18px}
+figure{margin:0}.diag{overflow-x:auto;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--soft)}
+.diag svg{display:block;width:100%;min-width:860px;height:auto}
+figcaption{color:var(--mut);font-size:14px;margin-top:10px;max-width:80ch}
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;margin:14px 0 0;padding:0;list-style:none;font-size:14px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--c);vertical-align:-2px;margin-right:6px}
+.legend .ln{width:26px;height:0;border-top:2px solid currentColor;border-radius:0;background:none;vertical-align:4px}
+.legend .ln.d{border-top-style:dashed}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,265px),1fr));gap:16px}
+.p{border:1px solid var(--line);border-top:5px solid var(--c);border-radius:12px;padding:16px 16px 12px;background:var(--bg)}
+.p h3{font-size:18px}.p .mod{color:var(--mut);font-size:14px;margin:4px 0 10px}
+.p .ds{font-size:14px;margin:0 0 10px}
+.p ul{list-style:none;margin:0;padding:0}
+.p li{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px solid var(--line);font-size:14px}
+.p li code{background:none;padding:0}
+.chip{flex:none;font:500 12px/1 Inter,sans-serif;padding:4px 8px;border-radius:999px;white-space:nowrap}
+.s-hazır{background:light-dark(#dff3e6,#163b26);color:light-dark(#1d6b3a,#9be0b2)}
+.s-güncelle{background:light-dark(#e3eefb,#17324f);color:light-dark(#1f5b9e,#a9cdf5)}
+.s-yeni{background:light-dark(#fff0e3,#40250f);color:light-dark(#a24400,#ffbf8d)}
+.s-düzelt{background:light-dark(#fde4e4,#45191b);color:light-dark(#a3242a,#ffadb0)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;font-size:14px;color:var(--mut)}
+td.n{text-align:right;white-space:nowrap}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:12px 28px;margin:0;padding:0;list-style:none}
+.rules li{padding:12px 0;border-top:1px solid var(--line)}.rules b{display:block;margin-bottom:2px}
+.kisi{margin-top:30px}.kisi h3{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.kisi h3 i{width:14px;height:14px;border-radius:4px;background:var(--c)}.kisi h3 span{color:var(--mut);font-weight:500;font-family:Inter,sans-serif;font-size:15px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:14px;align-items:start}
+.uml{border:1.5px solid var(--c);border-radius:10px;font-size:13px;overflow:hidden;background:var(--bg)}
+.uml header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 12px;background:color-mix(in srgb,var(--c) 16%,transparent);border-bottom:1.5px solid var(--c)}
+.uml header b{font-weight:500;font-size:14px;overflow-wrap:anywhere}
+.uml ul{list-style:none;margin:0;padding:8px 12px;border-bottom:1px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.uml li{padding:1px 0;overflow-wrap:anywhere}.uml li.bos{color:var(--mut)}
+.uml p{font:14px/1.45 Inter,sans-serif;margin:0;padding:9px 12px 2px;color:var(--ink)}
+.uml small{display:block;padding:2px 12px 10px;color:var(--mut);font-size:12px}
+ol.steps{list-style:none;counter-reset:s;margin:0;padding:0}
+ol.steps>li{counter-increment:s;position:relative;padding:4px 0 22px 54px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:38px;height:38px;border-radius:50%;background:var(--acc);color:#1b0d00;font:600 18px/38px Outfit,sans-serif;text-align:center}
+ol.steps>li::after{content:"";position:absolute;left:18px;top:42px;bottom:4px;border-left:2px solid var(--line)}
+ol.steps>li:last-child::after{display:none}
+ol.steps h3{margin:6px 0 6px}ol.steps p{margin:0 0 8px;max-width:75ch}
+ol.order{margin:6px 0 8px;padding-left:22px}ol.order li{margin:3px 0}
+.who{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.codebox{position:relative;margin:8px 0 4px}
+pre{background:light-dark(#0f2033,#06101c);color:#e6eef7;border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.55;margin:0;overflow-x:auto}
+.codebox pre{padding-top:48px}
+button.cp{position:absolute;top:8px;right:8px;min-height:36px;padding:6px 12px;font:500 13px Inter,sans-serif;border-radius:8px;border:1px solid #3a5674;background:#18324d;color:#e6eef7;cursor:pointer}
+button.cp:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px}
+.two h4{margin:0 0 4px;font-size:14px;color:var(--mut);font-weight:600}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+summary{cursor:pointer;font-weight:600;min-height:28px}
+.alt{background:var(--soft)}
+footer{color:var(--mut);font-size:14px}
+pre,.scroll{overflow-x:auto}.scroll a{flex:none}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:8em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:7.5em;margin-inline-start:-8em;white-space:normal;color:var(--mut)}.stack td:empty{display:none}ol.steps>li{padding-left:48px}}
+@media(prefers-reduced-motion:no-preference){.uml{transition:transform .15s}.uml:hover{transform:translateY(-2px)}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+
+<header class="band top"><div class="in">
+ <h1>VY-007 · Tek bir Kütüphane: ortak sınıf planı</h1>
+ <p class="lead">Şu an 4 dal birbirini derleyemiyor: ortak bir <code>Kitap</code> yok, iki dosya kök dizinde ve derleme hatası veriyor. Önce isimlerde anlaşıyoruz, sonra dalları sırayla <code>main</code>'e alıyoruz. Herkes yalnızca kendi dosyalarına dokunuyor.</p>
+ <div class="nums">
+  <div><b>4</b>kişi · 4 dal</div>
+  <div><b>28</b>dosya, hepsi <code>src/kutuphane/</code></div>
+  <div><b>6–7</b>dosya kişi başı</div>
+  <div class="bad"><b>2</b>dal derlenmiyor</div>
+ </div>
+</div></header>
+
+<nav class="scroll" aria-label="Bölümler">
+ <a href="#uml">UML</a><a href="#dagilim">Kim ne açacak</a><a href="#sozlesme">Ortak isimler</a>
+ <a href="#siniflar">Sınıf ayrıntıları</a><a href="#birlestirme">Birleştirme</a><a href="#duzelt">Dallardaki sorunlar</a><a href="#mermaid">Repo için UML</a>
+</nav>
+
+<section class="band" id="uml"><div class="in">
+ <h2>Sistem tek bir merkez nesne üzerinden konuşur</h2>
+ <p class="intro">Paneller sadece <code>Kutuphane</code>'yi alır; <code>Kutuphane</code> listeleri ve servisleri tutar; servisler kendi yazdığımız veri yapılarını kullanır. Renk, sınıfı kimin açacağını gösterir.</p>
+ <figure>
+  <div class="diag"><svg viewBox="0 0 1000 560" role="img" aria-label="Katmanlı sınıf diyagramı: arayüz panelleri Kutuphane nesnesini kullanır; Kutuphane üç servisi tutar; servisler veri yapılarını kullanır; veri yapıları modelleri içerir." xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif"><defs><marker id="ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker><marker id="elmas" viewBox="0 0 12 8" refX="11" refY="4" markerWidth="12" markerHeight="8" orient="auto-start-reverse"><path d="M1 4 L6 1 L11 4 L6 7 z" fill="currentColor"/></marker></defs><text x="8" y="51" font-size="12" font-weight="600" fill="currentColor" fill-opacity=".6">Arayüz</text><text x="8" y="151" font-size="12" font-weight="600" fill="currentColor" fill-opacity=".6">Merkez</text><line x1="8" x2="992" y1="108" y2="108" stroke="currentColor" stroke-opacity=".1"/><text x="8" y="255" font-size="12" font-weight="600" fill="currentColor" fill-opacity=".6">Servis</text><line x1="8" x2="992" y1="212" y2="212" stroke="currentColor" stroke-opacity=".1"/><text x="8" y="385" font-size="12" font-weight="600" fill="currentColor" fill-opacity=".6">Veri yapısı</text><line x1="8" x2="992" y1="342" y2="342" stroke="currentColor" stroke-opacity=".1"/><text x="8" y="505" font-size="12" font-weight="600" fill="currentColor" fill-opacity=".6">Model</text><line x1="8" x2="992" y1="462" y2="462" stroke="currentColor" stroke-opacity=".1"/><rect x="96" y="22" width="118" height="48" rx="8" fill="#b0408a" fill-opacity=".14" stroke="#b0408a" stroke-width="1.6"/><text x="155" y="42" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">AnaPencere</text><text x="155" y="59" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">JFrame</text><rect x="224" y="22" width="118" height="48" rx="8" fill="#0e9c86" fill-opacity=".14" stroke="#0e9c86" stroke-width="1.6"/><text x="283" y="42" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">UyePanel</text><text x="283" y="59" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">sekme</text><rect x="352" y="22" width="118" height="48" rx="8" fill="#0e9c86" fill-opacity=".14" stroke="#0e9c86" stroke-width="1.6"/><text x="411" y="42" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">KitapPanel</text><text x="411" y="59" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">sekme</text><rect x="480" y="22" width="118" height="48" rx="8" fill="#f06d12" fill-opacity=".14" stroke="#f06d12" stroke-width="1.6"/><text x="539" y="42" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">OduncPanel</text><text x="539" y="59" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">sekme</text><rect x="608" y="22" width="118" height="48" rx="8" fill="#2b7fd0" fill-opacity=".14" stroke="#2b7fd0" stroke-width="1.6"/><text x="667" y="42" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">SorguPanel</text><text x="667" y="59" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">sekme</text><rect x="736" y="22" width="118" height="48" rx="8" fill="#b0408a" fill-opacity=".14" stroke="#b0408a" stroke-width="1.6"/><text x="795" y="42" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">SiralamaPanel</text><text x="795" y="59" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">sekme</text><rect x="218" y="14" width="642" height="64" rx="12" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-dasharray="2 4"/><path d="M214 46 H218" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)"/><rect x="96" y="122" width="118" height="48" rx="8" fill="#b0408a" fill-opacity=".14" stroke="#b0408a" stroke-width="1.6"/><text x="155" y="142" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Main</text><text x="155" y="159" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">tek main</text><rect x="439" y="122" width="200" height="48" rx="8" fill="#b0408a" fill-opacity=".14" stroke="#b0408a" stroke-width="1.6"/><text x="539" y="142" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Kutuphane</text><text x="539" y="159" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">tüm listeler + servisler</text><rect x="720" y="122" width="150" height="48" rx="8" fill="#b0408a" fill-opacity=".14" stroke="#b0408a" stroke-width="1.6"/><text x="795" y="142" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">DosyaIslemleri</text><text x="795" y="159" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">txt kaydet / yükle</text><path d="M539 78 V122" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)"/><text x="547" y="100" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">her panel new XPanel(kutuphane)</text><path d="M214 146 H439" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ok)"/><text x="326" y="141" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".85">oluşturur</text><path d="M720 146 H639" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ok)"/><text x="680" y="141" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".85">okur/yazar</text><path d="M155 122 V70" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ok)"/><text x="161" y="102" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">açar</text><rect x="134" y="226" width="170" height="48" rx="8" fill="#b0408a" fill-opacity=".14" stroke="#b0408a" stroke-width="1.6"/><text x="219" y="246" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">KutuphaneSiralama</text><text x="219" y="263" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">3 algoritma</text><rect x="454" y="226" width="170" height="48" rx="8" fill="#f06d12" fill-opacity=".14" stroke="#f06d12" stroke-width="1.6"/><text x="539" y="246" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">OduncServisi</text><text x="539" y="263" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">ödünç kuralları</text><rect x="774" y="226" width="170" height="48" rx="8" fill="#2b7fd0" fill-opacity=".14" stroke="#2b7fd0" stroke-width="1.6"/><text x="859" y="246" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">SorguSistemi</text><text x="859" y="263" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">arama</text><path d="M539 170 V200 M219 200 H859" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3"/><path d="M219 200 V226" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)"/><path d="M539 200 V226" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)"/><path d="M859 200 V226" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)"/><text x="225" y="194" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">tutar</text><rect x="96" y="356" width="118" height="48" rx="8" fill="#0e9c86" fill-opacity=".14" stroke="#0e9c86" stroke-width="1.6"/><text x="155" y="376" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">KitapListesi</text><text x="155" y="393" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">çift yönlü liste</text><rect x="352" y="356" width="118" height="48" rx="8" fill="#0e9c86" fill-opacity=".14" stroke="#0e9c86" stroke-width="1.6"/><text x="411" y="376" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">UyeListesi</text><text x="411" y="393" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">çift yönlü liste</text><rect x="480" y="356" width="118" height="48" rx="8" fill="#f06d12" fill-opacity=".14" stroke="#f06d12" stroke-width="1.6"/><text x="539" y="376" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">OduncListesi</text><text x="539" y="393" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">bağlı liste</text><rect x="608" y="356" width="118" height="48" rx="8" fill="#f06d12" fill-opacity=".14" stroke="#f06d12" stroke-width="1.6"/><text x="667" y="376" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Kuyruk</text><text x="667" y="393" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">FIFO</text><rect x="736" y="356" width="118" height="48" rx="8" fill="#2b7fd0" fill-opacity=".14" stroke="#2b7fd0" stroke-width="1.6"/><text x="795" y="376" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">KendiHashMap</text><text x="795" y="393" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">hash tablosu</text><rect x="864" y="356" width="118" height="48" rx="8" fill="#2b7fd0" fill-opacity=".14" stroke="#2b7fd0" stroke-width="1.6"/><text x="923" y="376" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">DinamikDizi</text><text x="923" y="393" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">büyüyen dizi</text><path d="M135 274 V356" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ok)"/><text x="129" y="326" text-anchor="end" font-size="11" fill="currentColor" fill-opacity=".85">diziyeCevir()</text><path d="M259 274 V338 H515 V356" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ok)"/><path d="M539 274 V356" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)"/><path d="M579 274 V296 H667 V356" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)"/><path d="M609 274 V284 H771 V356" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)"/><text x="767" y="280" text-anchor="end" font-size="11" fill="currentColor" fill-opacity=".85">kuyruklar</text><text x="673" y="314" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">kopya başına 1</text><path d="M499 274 V306 H411 V356" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ok)"/><path d="M469 274 V290 H185 V356" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ok)"/><text x="317" y="306" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">bulur, doğrular</text><path d="M815 274 V356" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)"/><path d="M913 274 V356" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)"/><text x="821" y="314" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">indeks</text><text x="919" y="334" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">sonuç</text><rect x="96" y="476" width="118" height="48" rx="8" fill="#0e9c86" fill-opacity=".14" stroke="#0e9c86" stroke-width="1.6"/><text x="155" y="496" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Kitap</text><text x="155" y="513" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">yeni</text><rect x="224" y="476" width="118" height="48" rx="8" fill="#0e9c86" fill-opacity=".14" stroke="#0e9c86" stroke-width="1.6"/><text x="283" y="496" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">KitapKopyasi</text><text x="283" y="513" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">yeni</text><rect x="352" y="476" width="118" height="48" rx="8" fill="#0e9c86" fill-opacity=".14" stroke="#0e9c86" stroke-width="1.6"/><text x="411" y="496" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Uye</text><text x="411" y="513" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">hazır</text><rect x="480" y="476" width="118" height="48" rx="8" fill="#f06d12" fill-opacity=".14" stroke="#f06d12" stroke-width="1.6"/><text x="539" y="496" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Odunc</text><text x="539" y="513" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">güncelle</text><rect x="608" y="476" width="118" height="48" rx="8" fill="#f06d12" fill-opacity=".14" stroke="#f06d12" stroke-width="1.6"/><text x="667" y="496" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">BeklemeTalebi</text><text x="667" y="513" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">güncelle</text><rect x="736" y="476" width="118" height="48" rx="8" fill="#2b7fd0" fill-opacity=".14" stroke="#2b7fd0" stroke-width="1.6"/><text x="795" y="496" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">HashDugumu</text><text x="795" y="513" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity=".72">güncelle</text><path d="M155 404 V476" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)" marker-start="url(#elmas)"/><text x="161" y="468" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">0..*</text><path d="M411 404 V476" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)" marker-start="url(#elmas)"/><text x="417" y="468" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">0..*</text><path d="M539 404 V476" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)" marker-start="url(#elmas)"/><text x="545" y="468" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">0..*</text><path d="M667 404 V476" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)" marker-start="url(#elmas)"/><text x="673" y="468" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">0..*</text><path d="M795 404 V476" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-end="url(#ok)" marker-start="url(#elmas)"/><text x="801" y="468" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">0..*</text><path d="M214 500 H224" fill="none" stroke="currentColor" stroke-opacity=".7" stroke-width="1.3" marker-start="url(#elmas)"/><text x="219" y="540" text-anchor="start" font-size="11" fill="currentColor" fill-opacity=".85">1..* kopya</text></svg></div>
+  <figcaption>SorguSistemi ayrıca üç listeyi de okur (indeks kurmak için); okları sade tutmak için çizilmedi. Kesikli ok = çağırır/kullanır, düz ok = tutar, elmas = içerir (bağlı liste düğümleri).</figcaption>
+ </figure>
+ <ul class="legend">
+  <li style="--c:#0e9c86"><i></i>Muhammed Yusuf Karataş</li>
+  <li style="--c:#f06d12"><i></i>Muhammed Faruk Akkösem</li>
+  <li style="--c:#2b7fd0"><i></i>Yusuf Şahin</li>
+  <li style="--c:#b0408a"><i></i>Ömer Faruk Afşar</li>
+  <li><i class="ln"></i>tutar</li><li><i class="ln d"></i>kullanır</li>
+ </ul>
+</div></section>
+
+<section class="band alt" id="dagilim"><div class="in">
+ <h2>Kim hangi dosyayı açacak</h2>
+ <p class="intro">Her kişinin kendi veri yapısı, kendi kural/mantık işi, en az bir arayüz paneli ve bir test sınıfı var. <span class="chip s-hazır">hazır</span> dalda var, <span class="chip s-güncelle">güncelle</span> küçük ekleme, <span class="chip s-düzelt">düzelt</span> derleme hatası var, <span class="chip s-yeni">yeni</span> açılacak.</p>
+ <div class="grid4">
+  <div class="p" style="--c:#0e9c86"><h3>Muhammed Yusuf Karataş</h3><p class="mod">Dal: <code>kayit-ve-silme</code></p><p class="ds">Kitap &amp; Üye kayıt/silme · çift yönlü bağlı liste ×2 + kopya listesi</p><ul><li><code>Kitap.java</code><span class="chip s-yeni">yeni</span></li><li><code>KitapKopyasi.java</code><span class="chip s-yeni">yeni</span></li><li><code>KitapListesi.java</code><span class="chip s-yeni">yeni</span></li><li><code>Uye.java</code><span class="chip s-hazır">hazır</span></li><li><code>UyeListesi.java</code><span class="chip s-güncelle">güncelle</span></li><li><code>UyePanel.java</code><span class="chip s-yeni">yeni</span></li><li><code>KitapPanel.java</code><span class="chip s-yeni">yeni</span></li><li><code>UyeKitapTest.java</code><span class="chip s-yeni">yeni</span></li></ul></div>
+  <div class="p" style="--c:#f06d12"><h3>Muhammed Faruk Akkösem</h3><p class="mod">Dal: <code>odunc-sistemi</code></p><p class="ds">Ödünç / iade / bekleme · kuyruk (FIFO) + ödünç listesi, hash ile kopya→kuyruk</p><ul><li><code>Odunc.java</code><span class="chip s-güncelle">güncelle</span></li><li><code>BeklemeTalebi.java</code><span class="chip s-güncelle">güncelle</span></li><li><code>Kuyruk.java</code><span class="chip s-güncelle">güncelle</span></li><li><code>OduncListesi.java</code><span class="chip s-yeni">yeni</span></li><li><code>OduncServisi.java</code><span class="chip s-güncelle">güncelle</span></li><li><code>OduncPanel.java</code><span class="chip s-yeni">yeni</span></li><li><code>OduncTest.java</code><span class="chip s-güncelle">güncelle</span></li></ul></div>
+  <div class="p" style="--c:#2b7fd0"><h3>Yusuf Şahin</h3><p class="mod">Dal: <code>sorgulama-modulu</code></p><p class="ds">Sorgulama · kendi hash tablosu (zincirleme) + dinamik dizi</p><ul><li><code>KendiHashMap.java</code><span class="chip s-güncelle">güncelle</span></li><li><code>HashDugumu.java</code><span class="chip s-güncelle">güncelle</span></li><li><code>DinamikDizi.java</code><span class="chip s-yeni">yeni</span></li><li><code>SorguSistemi.java</code><span class="chip s-güncelle">güncelle</span></li><li><code>SorguPanel.java</code><span class="chip s-yeni">yeni</span></li><li><code>SorguTest.java</code><span class="chip s-yeni">yeni</span></li></ul></div>
+  <div class="p" style="--c:#b0408a"><h3>Ömer Faruk Afşar</h3><p class="mod">Dal: <code>siralama-modulu</code></p><p class="ds">Sıralama (kabarcık, seçmeli, eklemeli) + txt dosya + sistemi bağlama</p><ul><li><code>KutuphaneSiralama.java</code><span class="chip s-düzelt">düzelt</span></li><li><code>DosyaIslemleri.java</code><span class="chip s-yeni">yeni</span></li><li><code>Kutuphane.java</code><span class="chip s-yeni">yeni</span></li><li><code>Main.java</code><span class="chip s-yeni">yeni</span></li><li><code>AnaPencere.java</code><span class="chip s-yeni">yeni</span></li><li><code>SiralamaPanel.java</code><span class="chip s-yeni">yeni</span></li><li><code>SiralamaTest.java</code><span class="chip s-yeni">yeni</span></li></ul></div>
+ </div>
+ <h3 style="margin:30px 0 10px">Neden adil</h3>
+ <table class="stack">
+  <thead><tr><th>Kişi</th><th>Kendi yazdığı veri yapısı</th><th>Asıl mantık işi</th><th>Arayüz</th><th>Yapılacak dosya</th></tr></thead>
+  <tbody>
+   <tr><td><span class="who" style="--c:#0e9c86"></span>M. Yusuf K.</td><td>Çift yönlü bağlı liste (Üye, Kitap) + kopya listesi</td><td>Kayıt, silme ve silme kuralları</td><td>UyePanel, KitapPanel</td><td class="n">7 (Uye hazır)</td></tr>
+   <tr><td><span class="who" style="--c:#f06d12"></span>Faruk A.</td><td>Kuyruk + ödünç listesi</td><td>Ödünç/iade/bekleme kuralları (en çok kural burada)</td><td>OduncPanel</td><td class="n">7 (küçük eklemeler dahil)</td></tr>
+   <tr><td><span class="who" style="--c:#2b7fd0"></span>Yusuf Ş.</td><td>Hash tablosu + dinamik dizi (iki tanesi de sıfırdan)</td><td>6 arama türü + indeks kurma</td><td>SorguPanel</td><td class="n">6</td></tr>
+   <tr><td><span class="who" style="--c:#b0408a"></span>Ömer A.</td><td>3 sıralama algoritması</td><td>txt kaydet/yükle + Kutuphane/Main ile her şeyi bağlama</td><td>AnaPencere, SiralamaPanel</td><td class="n">7</td></tr>
+  </tbody>
+ </table>
+ <p class="intro" style="margin-top:12px">Değişen iki şey: bekleme talepleri tamamen ödünç modülünde (README'de iki kişide yazıyordu), Ömer'e sıralamanın yanında dosya kaydetme ve ana pencere eklendi; çünkü sıralama tek başına diğerlerinden hafif kalıyordu.</p>
+</div></section>
+
+<section class="band" id="sozlesme"><div class="in">
+ <h2>Ortak isimler: herkes bunlara göre yazar</h2>
+ <ul class="rules">
+  <li><b>Paket ve klasör</b>Her dosyanın ilk satırı <code>package kutuphane;</code>, hepsi <code>src/kutuphane/</code> altında. Kök dizinde <code>.java</code> kalmaz.</li>
+  <li><b>Tek model</b><code>Kitap</code>, <code>KitapKopyasi</code>, <code>Uye</code>, <code>Odunc</code>, <code>BeklemeTalebi</code> projede birer kez var. Kimse kendi dosyasının içine ikinci bir Kitap yazmaz.</li>
+  <li><b>Numaralar int</b><code>uyeNo</code>, <code>kitapNo</code>, <code>kopyaNo</code>, <code>oduncId</code>, <code>talepId</code> hep <code>int</code>. <code>kopyaNo</code> bütün sistemde tektir; o yüzden metotlar kitapNo + kopyaNo değil, sadece <code>kopyaNo</code> alır.</li>
+  <li><b>Getter adları</b><code>getAd()</code>, <code>getYazar()</code>, <code>getYayinYili()</code>, <code>getKitapNo()</code>, <code>getKopyaNo()</code>, <code>getUyeNo()</code>, <code>getBeklenenIade()</code>. <code>getBaslik()</code> yok.</li>
+  <li><b>Kopya durumu</b><code>KitapKopyasi.RAFTA</code>, <code>ODUNCTE</code>, <code>AYRILDI</code> sabitleri. Durumu sadece <code>OduncServisi</code> değiştirir.</li>
+  <li><b>Liste düğümü deseni</b>Uye'deki gibi: model sınıfında <code>public sonraki/onceki</code>, listede <code>bas</code>, <code>son</code>, <code>boyut</code>, <code>getBas()</code>, <code>diziyeCevir()</code>.</li>
+  <li><b>Hazır koleksiyon yok</b><code>java.util</code> içinden List, ArrayList, HashMap, LinkedList, Queue yok. Tarih için <code>java.time.LocalDate</code> kullanılıyor (veri yapısı değil).</li>
+  <li><b>Hata bildirme</b>Kurala aykırı işlemde metot <code>IllegalArgumentException("açıklayıcı Türkçe mesaj")</code> fırlatır; panel yakalayıp <code>JOptionPane</code> ile gösterir. Servislerde <code>System.out</code> ile hata basılmaz.</li>
+  <li><b>Arayüz</b>Swing. Her panel <code>XPanel extends JPanel</code>, kurucusu <code>XPanel(Kutuphane k)</code>. Sekmeleri sadece <code>AnaPencere</code> ekler.</li>
+  <li><b>main</b>Uygulamanın tek <code>main</code>'i <code>Main.java</code>'da. Herkesin kendi testi <code>UyeKitapTest</code>, <code>OduncTest</code>, <code>SorguTest</code>, <code>SiralamaTest</code>.</li>
+  <li><b>Dosya biçimi</b>Her satır bir kayıt, alanlar <code>;</code> ile ayrılır. Örnek <code>uyeler.txt</code>: <code>101;Ali Yılmaz</code></li>
+  <li><b>README</b>Herkes sadece kendi bölümünü düzenler; böylece birleştirmede çakışma olmaz.</li>
+ </ul>
+</div></section>
+
+<section class="band alt" id="siniflar"><div class="in">
+ <h2>Sınıf ayrıntıları (UML kutuları)</h2>
+ <p class="intro">Üst bölüm alanlar, alt bölüm metotlar. <code>-</code> private, <code>+</code> public. "← eklenecek" yazan satırlar dalda henüz yok.</p>
+ <section class="kisi" id="k-mk" style="--c:#0e9c86"><h3><i></i>Muhammed Yusuf Karataş <span>· Kitap &amp; Üye kayıt/silme</span></h3><div class="cards"><article class="uml" style="--c:#0e9c86"><header><b>Kitap</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li>- kitapNo : int</li><li>- ad : String</li><li>- yazar : String</li><li>- yayinYili : int</li><li>- ilkKopya : KitapKopyasi</li><li>- kopyaSayisi : int</li><li>+ sonraki, onceki : Kitap</li></ul><ul class="m"><li>+ Kitap(int kitapNo, String ad, String yazar, int yayinYili)</li><li>+ getKitapNo() : int</li><li>+ getAd() : String</li><li>+ getYazar() : String</li><li>+ getYayinYili() : int</li><li>+ kopyaEkle(KitapKopyasi k) : void</li><li>+ kopyaBul(int kopyaNo) : KitapKopyasi</li><li>+ getIlkKopya() : KitapKopyasi</li><li>+ toString() : String</li></ul><p>Hem kitap bilgisi hem KitapListesi düğümü (Uye ile aynı desen).</p><small>src/kutuphane/Kitap.java</small></article><article class="uml" style="--c:#0e9c86"><header><b>KitapKopyasi</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li>+ RAFTA, ODUNCTE, AYRILDI : String  {static final}</li><li>- kopyaNo : int   (kayıt no, sistemde tek)</li><li>- kitapNo : int</li><li>- durum : String</li><li>- ayrilanUyeNo : int   (yoksa -1)</li><li>+ sonraki : KitapKopyasi</li></ul><ul class="m"><li>+ KitapKopyasi(int kopyaNo, int kitapNo)</li><li>+ getKopyaNo() : int</li><li>+ getKitapNo() : int</li><li>+ getDurum() : String</li><li>+ setDurum(String d) : void</li><li>+ getAyrilanUyeNo() : int</li><li>+ setAyrilanUyeNo(int uyeNo) : void</li></ul><p>Durumu yalnızca OduncServisi değiştirir. AYRILDI = iadeden sonra sıradaki üyeye ayrıldı.</p><small>src/kutuphane/KitapKopyasi.java</small></article><article class="uml" style="--c:#0e9c86"><header><b>KitapListesi</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li>- bas, son : Kitap</li><li>- boyut : int</li></ul><ul class="m"><li>+ kitapEkle(int kitapNo, String ad, String yazar, int yil) : boolean</li><li>+ kitapBul(int kitapNo) : Kitap</li><li>+ kitapSil(int kitapNo) : boolean</li><li>+ kopyaEkle(int kitapNo, int kopyaNo) : boolean</li><li>+ kopyaBul(int kopyaNo) : KitapKopyasi</li><li>+ kopyaSil(int kopyaNo) : boolean</li><li>+ getBas() : Kitap</li><li>+ getBoyut() : int</li><li>+ diziyeCevir() : Kitap[]</li></ul><p>Çift yönlü bağlı liste. Silme kuralı: kopyaların hepsi RAFTA değilse silinmez.</p><small>src/kutuphane/KitapListesi.java</small></article><article class="uml" style="--c:#0e9c86"><header><b>Uye</b><span class="chip s-hazır">hazır</span></header><ul class="f"><li>- uyeNo : int</li><li>- adSoyad : String</li><li>- acikOduncSayisi : int</li><li>+ sonraki, onceki : Uye</li></ul><ul class="m"><li>+ Uye(int uyeNo, String adSoyad)</li><li>+ getUyeNo() : int</li><li>+ getAdSoyad() : String</li><li>+ getAcikOduncSayisi() : int</li><li>+ oduncArtir() : void</li><li>+ oduncAzalt() : void</li><li>+ silinebilirMi() : boolean</li></ul><p>kayit-ve-silme dalında hazır, değişmiyor.</p><small>src/kutuphane/Uye.java</small></article><article class="uml" style="--c:#0e9c86"><header><b>UyeListesi</b><span class="chip s-güncelle">güncelle</span></header><ul class="f"><li>- bas, son : Uye</li><li>- boyut : int</li></ul><ul class="m"><li>+ uyeKaydet(int uyeNo, String adSoyad) : boolean</li><li>+ uyeBul(int uyeNo) : Uye</li><li>+ uyeSil(int uyeNo) : boolean</li><li>+ getBas() : Uye</li><li>+ getBoyut() : int</li><li>+ listele() : void</li><li>+ diziyeCevir() : Uye[]   ← eklenecek</li></ul><p>Sadece diziyeCevir() eklenecek (tablo ve sıralama için).</p><small>src/kutuphane/UyeListesi.java</small></article><article class="uml" style="--c:#0e9c86"><header><b>UyePanel</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ UyePanel(Kutuphane k)   extends JPanel</li></ul><p>Üye ekle / sil / listele sekmesi.</p><small>src/kutuphane/UyePanel.java</small></article><article class="uml" style="--c:#0e9c86"><header><b>KitapPanel</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ KitapPanel(Kutuphane k)   extends JPanel</li></ul><p>Kitap + kopya ekle / sil sekmesi.</p><small>src/kutuphane/KitapPanel.java</small></article><article class="uml" style="--c:#0e9c86"><header><b>UyeKitapTest</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ main(String[] args) : void</li></ul><p>Kendi modülünün konsol testi.</p><small>src/kutuphane/UyeKitapTest.java</small></article></div></section><section class="kisi" id="k-f" style="--c:#f06d12"><h3><i></i>Muhammed Faruk Akkösem <span>· Ödünç / İade / Bekleme</span></h3><div class="cards"><article class="uml" style="--c:#f06d12"><header><b>Odunc</b><span class="chip s-güncelle">güncelle</span></header><ul class="f"><li>- oduncId, kopyaNo, uyeNo, kitapNo : int</li><li>- beklenenIade : LocalDate</li><li>- iadeEdildi : boolean</li><li>+ sonraki, onceki : Odunc   ← eklenecek</li></ul><ul class="m"><li>+ Odunc(int oduncId, int kopyaNo, int uyeNo, int kitapNo, LocalDate beklenenIade)</li><li>+ getter&#x27;lar (mevcut)</li><li>+ iadeEt() : void</li><li>+ gecikmisMi(LocalDate bugun) : boolean   ← eklenecek</li></ul><p>OduncListesi düğümü olacağı için sonraki/onceki eklenir.</p><small>src/kutuphane/Odunc.java</small></article><article class="uml" style="--c:#f06d12"><header><b>BeklemeTalebi</b><span class="chip s-güncelle">güncelle</span></header><ul class="f"><li>- sayac : int  {static}</li><li>- talepId, uyeNo, kitapNo, kopyaNo : int</li><li>+ sonraki : BeklemeTalebi</li></ul><ul class="m"><li>+ BeklemeTalebi(int uyeNo, int kitapNo, int kopyaNo)</li><li>+ BeklemeTalebi(int talepId, int uyeNo, int kitapNo, int kopyaNo)   ← dosyadan yükleme</li><li>+ getter&#x27;lar (mevcut)</li></ul><p>İkinci kurucu sayacı en büyük talepId + 1&#x27;e çeker.</p><small>src/kutuphane/BeklemeTalebi.java</small></article><article class="uml" style="--c:#f06d12"><header><b>Kuyruk</b><span class="chip s-güncelle">güncelle</span></header><ul class="f"><li>- bas, son : BeklemeTalebi</li><li>- boyut : int</li></ul><ul class="m"><li>+ kuyrugaEkle(BeklemeTalebi t) : void</li><li>+ kuyruktanCikar() : BeklemeTalebi</li><li>+ ilkiGoster() : BeklemeTalebi</li><li>+ kuyruktaUyeVarMi(int uyeNo) : boolean</li><li>+ talepSil(int talepId) : boolean   ← eklenecek</li><li>+ bosMu() : boolean</li><li>+ getBoyut() : int</li><li>+ listele() : void</li></ul><p>talepSil: üye sıradan vazgeçince ortadan düğüm koparır.</p><small>src/kutuphane/Kuyruk.java</small></article><article class="uml" style="--c:#f06d12"><header><b>OduncListesi</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li>- bas, son : Odunc</li><li>- boyut : int</li></ul><ul class="m"><li>+ ekle(Odunc o) : void</li><li>+ aktifOduncBul(int kopyaNo) : Odunc</li><li>+ getBas() : Odunc</li><li>+ getBoyut() : int</li><li>+ diziyeCevir() : Odunc[]</li></ul><p>Tüm ödünç kayıtları (iade edilenler de) burada kalır.</p><small>src/kutuphane/OduncListesi.java</small></article><article class="uml" style="--c:#f06d12"><header><b>OduncServisi</b><span class="chip s-güncelle">güncelle</span></header><ul class="f"><li>- uyeler : UyeListesi</li><li>- kitaplar : KitapListesi</li><li>- oduncler : OduncListesi</li><li>- kuyruklar : KendiHashMap&lt;Integer, Kuyruk&gt;</li><li>- sonOduncId : int</li></ul><ul class="m"><li>+ OduncServisi(UyeListesi u, KitapListesi k, OduncListesi o)</li><li>+ oduncVer(int uyeNo, int kopyaNo, LocalDate sonTarih) : Odunc</li><li>+ iadeAl(int kopyaNo) : Odunc</li><li>+ beklemeTalebiOlustur(int uyeNo, int kopyaNo) : BeklemeTalebi</li><li>+ beklemeTalebiSil(int kopyaNo, int talepId) : boolean</li><li>+ kuyrukGetir(int kopyaNo) : Kuyruk</li><li>+ dosyadanOduncEkle(Odunc o) : void</li><li>+ dosyadanTalepEkle(BeklemeTalebi t) : void</li></ul><p>Bütün kurallar burada: kopya RAFTA değilse veya başka üyeye AYRILDI ise ödünç verilmez; aynı üye aynı kopyada iki kez bekleyemez; iadede kuyruktan çıkan üye silinmişse atlanır.</p><small>src/kutuphane/OduncServisi.java</small></article><article class="uml" style="--c:#f06d12"><header><b>OduncPanel</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ OduncPanel(Kutuphane k)   extends JPanel</li></ul><p>Ödünç ver / iade al / sıraya gir sekmesi.</p><small>src/kutuphane/OduncPanel.java</small></article><article class="uml" style="--c:#f06d12"><header><b>OduncTest</b><span class="chip s-güncelle">güncelle</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ main(String[] args) : void</li></ul><p>Şimdiki Maintest.java&#x27;nın yeni adı.</p><small>src/kutuphane/OduncTest.java</small></article></div></section><section class="kisi" id="k-y" style="--c:#2b7fd0"><h3><i></i>Yusuf Şahin <span>· Sorgulama</span></h3><div class="cards"><article class="uml" style="--c:#2b7fd0"><header><b>KendiHashMap&lt;K,V&gt;</b><span class="chip s-güncelle">güncelle</span></header><ul class="f"><li>- kutular : HashDugumu&lt;K,V&gt;[]</li><li>- boyut : int</li></ul><ul class="m"><li>+ put(K anahtar, V deger) : void</li><li>+ get(K anahtar) : V</li><li>+ containsKey(K anahtar) : boolean</li><li>+ remove(K anahtar) : V</li><li>+ getBoyut() : int</li><li>+ temizle() : void</li><li>- indexBul(K anahtar) : int</li></ul><p>Şu an sadece String→Kitap; generic yapılınca Faruk da kopyaNo→Kuyruk için kullanır.</p><small>src/kutuphane/KendiHashMap.java</small></article><article class="uml" style="--c:#2b7fd0"><header><b>HashDugumu&lt;K,V&gt;</b><span class="chip s-güncelle">güncelle</span></header><ul class="f"><li>+ anahtar : K</li><li>+ deger : V</li><li>+ sonraki : HashDugumu&lt;K,V&gt;</li></ul><ul class="m"><li>+ HashDugumu(K anahtar, V deger)</li></ul><p>Zincirleme (chaining) düğümü.</p><small>src/kutuphane/HashDugumu.java</small></article><article class="uml" style="--c:#2b7fd0"><header><b>DinamikDizi&lt;T&gt;</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li>- elemanlar : Object[]</li><li>- boyut : int</li></ul><ul class="m"><li>+ ekle(T eleman) : void</li><li>+ get(int i) : T</li><li>+ getBoyut() : int</li><li>- buyut() : void</li></ul><p>README&#x27;deki ArrayList&#x27;in yerine; arama sonuçlarını döndürür.</p><small>src/kutuphane/DinamikDizi.java</small></article><article class="uml" style="--c:#2b7fd0"><header><b>SorguSistemi</b><span class="chip s-güncelle">güncelle</span></header><ul class="f"><li>- kitaplar : KitapListesi</li><li>- uyeler : UyeListesi</li><li>- oduncler : OduncListesi</li><li>- adaGore : KendiHashMap&lt;String, DinamikDizi&lt;Kitap&gt;&gt;</li><li>- yazaraGore : KendiHashMap&lt;String, DinamikDizi&lt;Kitap&gt;&gt;</li><li>- uyeNoyaGore : KendiHashMap&lt;Integer, Uye&gt;</li></ul><ul class="m"><li>+ SorguSistemi(KitapListesi k, UyeListesi u, OduncListesi o)</li><li>+ indeksleriYenile() : void</li><li>+ kitapAdiylaAra(String ad) : DinamikDizi&lt;Kitap&gt;</li><li>+ yazaraGoreAra(String yazar) : DinamikDizi&lt;Kitap&gt;</li><li>+ uyeNoIleAra(int uyeNo) : Uye</li><li>+ uyeninOduncleri(int uyeNo) : DinamikDizi&lt;Odunc&gt;</li><li>+ durumaGoreAra(boolean iadeEdildi) : DinamikDizi&lt;Odunc&gt;</li><li>+ gecikenler(LocalDate bugun) : DinamikDizi&lt;Odunc&gt;</li></ul><p>Anahtarlar küçük harfe çevrilip trim&#x27;lenir. Ekleme/silmeden sonra indeksleriYenile() çağrılır.</p><small>src/kutuphane/SorguSistemi.java</small></article><article class="uml" style="--c:#2b7fd0"><header><b>SorguPanel</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ SorguPanel(Kutuphane k)   extends JPanel</li></ul><p>Arama sekmesi.</p><small>src/kutuphane/SorguPanel.java</small></article><article class="uml" style="--c:#2b7fd0"><header><b>SorguTest</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ main(String[] args) : void</li></ul><p>Kendi modülünün konsol testi.</p><small>src/kutuphane/SorguTest.java</small></article></div></section><section class="kisi" id="k-o" style="--c:#b0408a"><h3><i></i>Ömer Faruk Afşar <span>· Sıralama + Dosya + Ana pencere</span></h3><div class="cards"><article class="uml" style="--c:#b0408a"><header><b>KutuphaneSiralama</b><span class="chip s-düzelt">düzelt</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ kitaplariAdaGoreSirala(Kitap[] d) : void   (kabarcık)</li><li>+ kitaplariYilaGoreSirala(Kitap[] d) : void   (seçmeli)</li><li>+ odunclariIadeTarihineGoreSirala(Odunc[] d) : void   (eklemeli)</li><li>- metinKarsilastir(String a, String b) : int</li></ul><p>List&lt;Kitap&gt; yerine dizi alır; diziyi listelerin diziyeCevir() metodu verir, asıl liste bozulmaz.</p><small>src/kutuphane/KutuphaneSiralama.java</small></article><article class="uml" style="--c:#b0408a"><header><b>DosyaIslemleri</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ kaydet(Kutuphane k) : void</li><li>+ yukle(Kutuphane k) : void</li></ul><p>uyeler.txt · kitaplar.txt · kopyalar.txt · oduncler.txt · talepler.txt — alanlar ; ile ayrılır.</p><small>src/kutuphane/DosyaIslemleri.java</small></article><article class="uml" style="--c:#b0408a"><header><b>Kutuphane</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li>- uyeler : UyeListesi</li><li>- kitaplar : KitapListesi</li><li>- oduncler : OduncListesi</li><li>- oduncServisi : OduncServisi</li><li>- sorgu : SorguSistemi</li><li>- siralama : KutuphaneSiralama</li></ul><ul class="m"><li>+ Kutuphane()   (hepsini oluşturup birbirine bağlar)</li><li>+ getUyeler() / getKitaplar() / getOduncler()</li><li>+ getOduncServisi() / getSorgu() / getSiralama()</li></ul><p>Tek merkez nesne. Paneller bunu alır, başka hiçbir şeyi new&#x27;lemez.</p><small>src/kutuphane/Kutuphane.java</small></article><article class="uml" style="--c:#b0408a"><header><b>Main</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ main(String[] args) : void</li></ul><p>Kutuphane oluştur → yukle → AnaPencere göster; kapanırken kaydet. Projedeki tek uygulama main&#x27;i.</p><small>src/kutuphane/Main.java</small></article><article class="uml" style="--c:#b0408a"><header><b>AnaPencere</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li>- sekmeler : JTabbedPane</li></ul><ul class="m"><li>+ AnaPencere(Kutuphane k)   extends JFrame</li></ul><p>Panel birleşince sekme satırını Ömer ekler.</p><small>src/kutuphane/AnaPencere.java</small></article><article class="uml" style="--c:#b0408a"><header><b>SiralamaPanel</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ SiralamaPanel(Kutuphane k)   extends JPanel</li></ul><p>Sıralama sekmesi.</p><small>src/kutuphane/SiralamaPanel.java</small></article><article class="uml" style="--c:#b0408a"><header><b>SiralamaTest</b><span class="chip s-yeni">yeni</span></header><ul class="f"><li class="bos">—</li></ul><ul class="m"><li>+ main(String[] args) : void</li></ul><p>Kendi modülünün konsol testi.</p><small>src/kutuphane/SiralamaTest.java</small></article></div></section>
+</div></section>
+
+<section class="band" id="birlestirme"><div class="in">
+ <h2>Birleştirme: bağımlılık sırasıyla, her adımda derleyerek</h2>
+ <p class="intro">Kimse doğrudan <code>main</code>'e push etmez. Her parça kendi dalından Pull Request ile gelir; sıra, bir dosyanın kullandığı sınıfın main'de önceden var olmasına göre belirlendi.</p>
+ <ol class="steps">
+  <li><h3>Toplantı ve temizlik (bugün)</h3><p>Bu sayfadaki isimlerde anlaşın. Yusuf, <code>main</code>'deki kök dizindeki <code>sorgulama.java</code>'yı siler (derlenmiyor, içinde ikinci bir Kitap var). Herkes kendi dalındaki dosyaları <code>src/kutuphane/</code>'ye taşır ve paket satırını ekler.</p></li>
+  <li><h3>Pull Request sırası</h3>
+   <ol class="order">
+    <li><span class="who" style="--c:#0e9c86"></span><b>kayit-ve-silme</b>: Uye, UyeListesi, Kitap, KitapKopyasi, KitapListesi. Kimseye bağımlı değil, herkes buna bağımlı.</li>
+    <li><span class="who" style="--c:#2b7fd0"></span><b>sorgulama-modulu, 1. parça</b>: KendiHashMap, HashDugumu, DinamikDizi. Faruk'un OduncServisi bunları kullanır.</li>
+    <li><span class="who" style="--c:#f06d12"></span><b>odunc-sistemi</b>: Odunc, BeklemeTalebi, Kuyruk, OduncListesi, OduncServisi, OduncTest.</li>
+    <li><span class="who" style="--c:#2b7fd0"></span><b>sorgulama-modulu, 2. parça</b>: SorguSistemi, SorguTest (OduncListesi'ne ihtiyaç duyar).</li>
+    <li><span class="who" style="--c:#b0408a"></span><b>siralama-modulu</b>: KutuphaneSiralama, DosyaIslemleri, Kutuphane, Main, AnaPencere (henüz sekmesiz), SiralamaTest.</li>
+    <li><b>Paneller</b>: herkes kendi panelini kendi dalından gönderir; birleşince Ömer <code>AnaPencere</code>'ye o sekmenin satırını ekler.</li>
+   </ol>
+   <p>İlk PR'lar iskelet olabilir (alanlar + metot imzaları, gövde boş veya <code>return null;</code>). Önemli olan imzaların erken main'de olması; içerikler sonraki PR'larla dolar.</p></li>
+  <li><h3>Her PR'dan önce: main'i kendi dalına al ve derle</h3>
+   <div class="two">
+    <div><h4>GitHub Desktop</h4><p>Current Branch → kendi dalın · Branch → <b>Update from main</b> · derle · Push origin · <b>Create Pull Request</b> (hedef: main).</p></div>
+    <div><h4>Komut satırı</h4><div class="codebox"><pre id="g1">git checkout odunc-sistemi      # kendi dalın
+git pull origin main             # main'deki son hali al
+javac -d out src/kutuphane/*.java
+git push origin odunc-sistemi</pre><button class="cp" data-t="g1">Kopyala</button></div></div>
+   </div>
+   <p>Derleme hatasızsa PR aç. Bir PR main'e girince diğer üç kişi aynı "Update from main" adımını tekrarlar.</p></li>
+  <li><h3>Başkasının dosyasına dokunma</h3><p>Bir sınıfa metot lazımsa (örneğin Faruk'a <code>KitapListesi.kopyaBul</code>) sahibine yazılır, sahibi ekler. Böylece hem çakışma çıkmaz hem de herkesin GitHub katkısı kendi adına görünür.</p></li>
+  <li><h3>Son kontrol senaryosu (main'de)</h3><p>Üye 101 ve 102 ekle → kitap 1 ve kopya 500 ekle → 101'e ödünç ver → 102 sıraya girsin → 101 iade etsin → kopya <code>AYRILDI</code> olmalı → 103 alamamalı → 102 alabilmeli → kapat, aç: veriler txt'den geri gelmeli → sıralama ve gecikenler sekmesi doğru çalışmalı.</p></li>
+ </ol>
+</div></section>
+
+<section class="band alt" id="duzelt"><div class="in">
+ <h2>Dallarda şu an düzeltilmesi gerekenler</h2>
+ <p class="intro">24 Kasım 2026 itibarıyla dallardaki son commit'lere göre.</p>
+ <table class="stack">
+  <thead><tr><th>Dal</th><th>Sorun</th><th>Kim</th></tr></thead>
+  <tbody>
+   <tr><td><code>main</code></td><td>Kökte <code>sorgulama.java</code>: <code>java.util.HashMap/ArrayList</code> import ediyor, <code>boolen</code> yazım hatası var, derlenmiyor.</td><td>Yusuf</td></tr>
+   <tr><td><code>sorgulama-modulu</code></td><td>Dosyanın içinde ayrı bir <code>Kitap</code> sınıfı var (ortak Kitap ile çakışır), <code>package</code> satırı yok, kökte duruyor. <code>KendiHashMap</code>'te <code>get</code> yok ve sadece String→Kitap tutuyor.</td><td>Yusuf</td></tr>
+   <tr><td><code>siralama-modulu</code></td><td><code>import java.util.List</code> (yasak). <code>for(int i=1 i&lt;n; i++);{</code> satırında eksik <code>;</code> derleme hatası veriyor, sondaki <code>;</code> da döngüyü boşaltıyor. <code>getBaslik()</code> yerine <code>getAd()</code>. Metot adlarında "ö" harfi var, sınıf adı <code>KutupHaneSiralama</code> → <code>KutuphaneSiralama</code>. Kökte, paket yok.</td><td>Ömer</td></tr>
+   <tr><td><code>odunc-sistemi</code></td><td><code>OduncServisi</code> metotları şimdilik sadece ekrana yazıyor. <code>Kuyruk</code>'ta ortadan talep silme yok (vazgeçme için gerekli). <code>Maintest</code> → <code>OduncTest</code>. <code>oduncVer</code> kitapNo ve kopyaNo'yu ikisini birden alıyor; sadece kopyaNo yeterli.</td><td>Faruk</td></tr>
+   <tr><td><code>kayit-ve-silme</code></td><td>Kitap ve kopya tarafı henüz yok. README başlığındaki "Bekleme Talepleri" ödünç modülüyle çakışıyor, başlıktan çıkmalı. <code>UyeListesi</code>'ne <code>diziyeCevir()</code> eklenecek.</td><td>M. Yusuf</td></tr>
+   <tr><td><code>README</code></td><td>Ömer'in bölümü "çift yönlü liste üzerinde sıralama" diyor; plan dizi üzerinde sıralama. Faruk'un bölümünde HashMap'in kendi yazdığımız <code>KendiHashMap</code> olduğu yazmalı.</td><td>Ömer, Faruk</td></tr>
+  </tbody>
+ </table>
+</div></section>
+
+<section class="band" id="mermaid"><div class="in">
+ <h2>Repo için UML (Mermaid)</h2>
+ <p class="intro">Yusuf'un <code>SISTEM_UML.md</code> dosyasının yerine konabilir; GitHub bu bloğu kendisi çizer. Aynı sınıf adları ve metot imzaları.</p>
+ <details><summary>Mermaid kodunu göster</summary>
+  <div class="codebox"><pre id="mm">```mermaid
+classDiagram
+    direction TB
+    class Kitap {
+        - kitapNo : int
+        - ad : String
+        - yazar : String
+        - yayinYili : int
+        - ilkKopya : KitapKopyasi
+        - kopyaSayisi : int
+        + sonraki, onceki : Kitap
+        + Kitap(int kitapNo, String ad, String yazar, int yayinYili)
+        + getKitapNo() int
+        + getAd() String
+        + getYazar() String
+        + getYayinYili() int
+        + kopyaEkle(KitapKopyasi k) void
+        + kopyaBul(int kopyaNo) KitapKopyasi
+        + getIlkKopya() KitapKopyasi
+        + toString() String
+    }
+    class KitapKopyasi {
+        + RAFTA, ODUNCTE, AYRILDI : String
+        - kopyaNo : int
+        - kitapNo : int
+        - durum : String
+        - ayrilanUyeNo : int
+        + sonraki : KitapKopyasi
+        + KitapKopyasi(int kopyaNo, int kitapNo)
+        + getKopyaNo() int
+        + getKitapNo() int
+        + getDurum() String
+        + setDurum(String d) void
+        + getAyrilanUyeNo() int
+        + setAyrilanUyeNo(int uyeNo) void
+    }
+    class KitapListesi {
+        - bas, son : Kitap
+        - boyut : int
+        + kitapEkle(int kitapNo, String ad, String yazar, int yil) boolean
+        + kitapBul(int kitapNo) Kitap
+        + kitapSil(int kitapNo) boolean
+        + kopyaEkle(int kitapNo, int kopyaNo) boolean
+        + kopyaBul(int kopyaNo) KitapKopyasi
+        + kopyaSil(int kopyaNo) boolean
+        + getBas() Kitap
+        + getBoyut() int
+        + diziyeCevir() Kitap[]
+    }
+    class Uye {
+        - uyeNo : int
+        - adSoyad : String
+        - acikOduncSayisi : int
+        + sonraki, onceki : Uye
+        + Uye(int uyeNo, String adSoyad)
+        + getUyeNo() int
+        + getAdSoyad() String
+        + getAcikOduncSayisi() int
+        + oduncArtir() void
+        + oduncAzalt() void
+        + silinebilirMi() boolean
+    }
+    class UyeListesi {
+        - bas, son : Uye
+        - boyut : int
+        + uyeKaydet(int uyeNo, String adSoyad) boolean
+        + uyeBul(int uyeNo) Uye
+        + uyeSil(int uyeNo) boolean
+        + getBas() Uye
+        + getBoyut() int
+        + listele() void
+        + diziyeCevir() Uye[]
+    }
+    class UyePanel {
+        + UyePanel(Kutuphane k)
+    }
+    class KitapPanel {
+        + KitapPanel(Kutuphane k)
+    }
+    class Odunc {
+        - oduncId, kopyaNo, uyeNo, kitapNo : int
+        - beklenenIade : LocalDate
+        - iadeEdildi : boolean
+        + sonraki, onceki : Odunc
+        + Odunc(int oduncId, int kopyaNo, int uyeNo, int kitapNo, LocalDate beklenenIade)
+        + getter&#x27;lar (mevcut)
+        + iadeEt() void
+        + gecikmisMi(LocalDate bugun) boolean
+    }
+    class BeklemeTalebi {
+        - sayac : int
+        - talepId, uyeNo, kitapNo, kopyaNo : int
+        + sonraki : BeklemeTalebi
+        + BeklemeTalebi(int uyeNo, int kitapNo, int kopyaNo)
+        + BeklemeTalebi(int talepId, int uyeNo, int kitapNo, int kopyaNo)
+        + getter&#x27;lar (mevcut)
+    }
+    class Kuyruk {
+        - bas, son : BeklemeTalebi
+        - boyut : int
+        + kuyrugaEkle(BeklemeTalebi t) void
+        + kuyruktanCikar() BeklemeTalebi
+        + ilkiGoster() BeklemeTalebi
+        + kuyruktaUyeVarMi(int uyeNo) boolean
+        + talepSil(int talepId) boolean
+        + bosMu() boolean
+        + getBoyut() int
+        + listele() void
+    }
+    class OduncListesi {
+        - bas, son : Odunc
+        - boyut : int
+        + ekle(Odunc o) void
+        + aktifOduncBul(int kopyaNo) Odunc
+        + getBas() Odunc
+        + getBoyut() int
+        + diziyeCevir() Odunc[]
+    }
+    class OduncServisi {
+        - uyeler : UyeListesi
+        - kitaplar : KitapListesi
+        - oduncler : OduncListesi
+        - kuyruklar : KendiHashMap~Integer, Kuyruk~
+        - sonOduncId : int
+        + OduncServisi(UyeListesi u, KitapListesi k, OduncListesi o)
+        + oduncVer(int uyeNo, int kopyaNo, LocalDate sonTarih) Odunc
+        + iadeAl(int kopyaNo) Odunc
+        + beklemeTalebiOlustur(int uyeNo, int kopyaNo) BeklemeTalebi
+        + beklemeTalebiSil(int kopyaNo, int talepId) boolean
+        + kuyrukGetir(int kopyaNo) Kuyruk
+        + dosyadanOduncEkle(Odunc o) void
+        + dosyadanTalepEkle(BeklemeTalebi t) void
+    }
+    class OduncPanel {
+        + OduncPanel(Kutuphane k)
+    }
+    class KendiHashMap~K,V~ {
+        - kutular : HashDugumu~K,V~[]
+        - boyut : int
+        + put(K anahtar, V deger) void
+        + get(K anahtar) V
+        + containsKey(K anahtar) boolean
+        + remove(K anahtar) V
+        + getBoyut() int
+        + temizle() void
+        - indexBul(K anahtar) int
+    }
+    class HashDugumu~K,V~ {
+        + anahtar : K
+        + deger : V
+        + sonraki : HashDugumu~K,V~
+        + HashDugumu(K anahtar, V deger)
+    }
+    class DinamikDizi~T~ {
+        - elemanlar : Object[]
+        - boyut : int
+        + ekle(T eleman) void
+        + get(int i) T
+        + getBoyut() int
+        - buyut() void
+    }
+    class SorguSistemi {
+        - kitaplar : KitapListesi
+        - uyeler : UyeListesi
+        - oduncler : OduncListesi
+        - adaGore : KendiHashMap~String, DinamikDizi~
+        - yazaraGore : KendiHashMap~String, DinamikDizi~
+        - uyeNoyaGore : KendiHashMap~Integer, Uye~
+        + SorguSistemi(KitapListesi k, UyeListesi u, OduncListesi o)
+        + indeksleriYenile() void
+        + kitapAdiylaAra(String ad) DinamikDizi~Kitap~
+        + yazaraGoreAra(String yazar) DinamikDizi~Kitap~
+        + uyeNoIleAra(int uyeNo) Uye
+        + uyeninOduncleri(int uyeNo) DinamikDizi~Odunc~
+        + durumaGoreAra(boolean iadeEdildi) DinamikDizi~Odunc~
+        + gecikenler(LocalDate bugun) DinamikDizi~Odunc~
+    }
+    class SorguPanel {
+        + SorguPanel(Kutuphane k)
+    }
+    class KutuphaneSiralama {
+        + kitaplariAdaGoreSirala(Kitap[] d) void
+        + kitaplariYilaGoreSirala(Kitap[] d) void
+        + odunclariIadeTarihineGoreSirala(Odunc[] d) void
+        - metinKarsilastir(String a, String b) int
+    }
+    class DosyaIslemleri {
+        + kaydet(Kutuphane k) void
+        + yukle(Kutuphane k) void
+    }
+    class Kutuphane {
+        - uyeler : UyeListesi
+        - kitaplar : KitapListesi
+        - oduncler : OduncListesi
+        - oduncServisi : OduncServisi
+        - sorgu : SorguSistemi
+        - siralama : KutuphaneSiralama
+        + Kutuphane()
+        + getUyeler() / getKitaplar() / getOduncler()
+        + getOduncServisi() / getSorgu() / getSiralama()
+    }
+    class Main {
+        + main(String[] args) void
+    }
+    class AnaPencere {
+        - sekmeler : JTabbedPane
+        + AnaPencere(Kutuphane k)
+    }
+    class SiralamaPanel {
+        + SiralamaPanel(Kutuphane k)
+    }
+    KitapListesi &quot;1&quot; *-- &quot;0..*&quot; Kitap
+    Kitap &quot;1&quot; *-- &quot;1..*&quot; KitapKopyasi
+    UyeListesi &quot;1&quot; *-- &quot;0..*&quot; Uye
+    OduncListesi &quot;1&quot; *-- &quot;0..*&quot; Odunc
+    Kuyruk &quot;1&quot; *-- &quot;0..*&quot; BeklemeTalebi
+    KendiHashMap~K,V~ *-- HashDugumu~K,V~
+    OduncServisi --&gt; OduncListesi
+    OduncServisi --&gt; Kuyruk
+    OduncServisi --&gt; KendiHashMap~K,V~
+    OduncServisi ..&gt; UyeListesi : doğrular
+    OduncServisi ..&gt; KitapListesi : doğrular
+    SorguSistemi --&gt; KendiHashMap~K,V~
+    SorguSistemi ..&gt; DinamikDizi~T~
+    SorguSistemi ..&gt; KitapListesi
+    SorguSistemi ..&gt; UyeListesi
+    SorguSistemi ..&gt; OduncListesi
+    KutuphaneSiralama ..&gt; Kitap
+    KutuphaneSiralama ..&gt; Odunc
+    Kutuphane *-- UyeListesi
+    Kutuphane *-- KitapListesi
+    Kutuphane *-- OduncListesi
+    Kutuphane *-- OduncServisi
+    Kutuphane *-- SorguSistemi
+    Kutuphane *-- KutuphaneSiralama
+    DosyaIslemleri ..&gt; Kutuphane : kaydet/yukle
+    Main ..&gt; Kutuphane
+    Main ..&gt; AnaPencere
+    AnaPencere *-- UyePanel
+    AnaPencere *-- KitapPanel
+    AnaPencere *-- OduncPanel
+    AnaPencere *-- SorguPanel
+    AnaPencere *-- SiralamaPanel
+```</pre><button class="cp" data-t="mm">Kopyala</button></div>
+ </details>
+</div></section>
+
+<footer class="band"><div class="in">VY-007 · Takım 7 CompileError · İnönü Üniversitesi Veri Yapıları · Plan 24 Kasım 2026'daki dallara göre hazırlandı.</div></footer>
+
+<script>
+{
+ for (const b of document.querySelectorAll('button.cp')) {
+  b.addEventListener('click', async () => {
+   const t = document.getElementById(b.dataset.t).textContent;
+   try { await navigator.clipboard.writeText(t); b.textContent = 'Kopyalandı'; }
+   catch (e) { b.textContent = 'Seçip kopyalayın'; }
+   setTimeout(() => { b.textContent = 'Kopyala'; }, 1800);
+  });
+ }
+}
+</script>
+</body>
+</html>
