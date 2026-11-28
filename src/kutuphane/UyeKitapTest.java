@@ -60,3 +60,38 @@ public class UyeKitapTest {
         kitaplar.listele();                            // sadece kitap 1 ve kopya 501
     }
 }
+//===== UYE TESTI =====
+//KAYDEDILDI = Uye No: 101 | Ad Soyad: Ali Yilmaz | Acik Odunc: 0
+//KAYDEDILDI = Uye No: 102 | Ad Soyad: Ayse Kaya | Acik Odunc: 0
+//KAYDEDILDI = Uye No: 103 | Ad Soyad: Mehmet Demir | Acik Odunc: 0
+//HATA: 101 numarali uye zaten kayitli!
+//HATA: 101 numarali uyenin aktif odunc kaydi var, silinemez!
+//SILINDI =Uye No:102
+//-- Bastan sona:
+//Uye No: 101 | Ad Soyad: Ali Yilmaz | Acik Odunc: 0
+//Uye No: 103 | Ad Soyad: Mehmet Demir | Acik Odunc: 0
+//-- Sondan basa:
+//Uye No: 103 | Ad Soyad: Mehmet Demir | Acik Odunc: 0
+//Uye No: 101 | Ad Soyad: Ali Yilmaz | Acik Odunc: 0
+//Dizideki uye sayisi: 2
+
+//===== KITAP TESTI =====
+//HATA: 1 numarali kitap zaten kayitli!
+//HATA: 500 numarali kopya zaten var!
+//HATA: 9 numarali kitap bulunamadi, once kitabi ekleyin!
+//Kitap No: 1 | Kurk Mantolu Madonna - Sabahattin Ali (1943) | Kopya: 2
+//    Kopya No: 500 | Kitap No: 1 | Durum: RAFTA
+//    Kopya No: 501 | Kitap No: 1 | Durum: RAFTA
+//Kitap No: 2 | Tutunamayanlar - Oguz Atay (1972) | Kopya: 1
+//    Kopya No: 600 | Kitap No: 2 | Durum: RAFTA
+
+//===== SILME KURALLARI =====
+//HATA: 500 numarali kopya su an ODUNCTE, silinemez!
+//Oduncteki kopya silindi mi? false
+//HATA: 1 numarali kitabin oduncte veya ayrilmis kopyasi var, silinemez!
+//Oduncte kopyasi olan kitap silindi mi? false
+//Raftaki kopya silindi mi? true
+//Kitap 2 silindi mi? true
+//-- Son durum:
+//Kitap No: 1 | Kurk Mantolu Madonna - Sabahattin Ali (1943) | Kopya: 1
+//    Kopya No: 501 | Kitap No: 1 | Durum: RAFTA çıktısı da tam olarak böyle olmaktadır.
