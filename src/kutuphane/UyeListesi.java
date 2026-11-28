@@ -100,6 +100,22 @@ boyut--;
 System.out.println("SILINDI =Uye No:" + uyeNo);
 return true;
 }
+/**
+     * yeni ekledim : Uyeleri bir diziye kopyalar.
+     * Siralama ve sorgu modulleri bu diziyi kullanir.
+     * Dizide yer degistirmek asil listeyi bozmaz.
+     */
+public Uye[] diziyeCevir() {
+    Uye[] dizi = new Uye[boyut];   // uye sayisi kadar yer ac
+    Uye gecici = bas;              // bastan basla
+    int i = 0;
+    while (gecici != null) {       // listenin sonuna kadar git
+        dizi[i] = gecici;          // uyeyi diziye koy
+        i++;
+        gecici = gecici.sonraki;   // bir sonraki uyeye gec
+    }
+    return dizi;
+}
 /** Tum uyeleri bastan sona ekrana yazdirir. */
 public void listele(){
     if (bas == null){
