@@ -23,7 +23,7 @@ public int getBoyut(){
 
  // Kitap numarasina gore arar. Bulamazsa null doner.
 
-public Kitap KitapBul(int kitapNo) {
+public Kitap kitapBul(int kitapNo) {
     Kitap gecici = bas;
     while (gecici!=null) {
         if (gecici.getKitapNo() == kitapNo){
@@ -35,7 +35,7 @@ public Kitap KitapBul(int kitapNo) {
 }
 //Yeni kitabı liste sonuna ekler ve aynı numaralı kitap varsa eklemez false döner returnde.
  public boolean kitapEkle(int kitapNo, String ad, String yazar, int yil) {
-        if (KitapBul(kitapNo) != null) {
+        if (kitapBul(kitapNo) != null) {
             System.out.println("HATA: " + kitapNo + " numarali kitap zaten kayitli!");
             return false;
         }
@@ -57,7 +57,7 @@ public Kitap KitapBul(int kitapNo) {
      // kopyalarin hepsi rafta degilse (oduncte/ayrilmis varsa) silinmez.
      
     public boolean kitapSil(int kitapNo) {
-        Kitap silinecek = KitapBul(kitapNo);
+        Kitap silinecek = kitapBul(kitapNo);
         if (silinecek == null) {
             System.out.println("HATA: " + kitapNo + " numarali kitap bulunamadi!");
             return false;
@@ -88,7 +88,7 @@ public Kitap KitapBul(int kitapNo) {
      //kopyaNo BÜTÜN SİSTEMDE TEKTİR.
      
     public boolean kopyaEkle(int kitapNo, int kopyaNo) {
-        Kitap kitap = KitapBul(kitapNo);
+        Kitap kitap = kitapBul(kitapNo);
         if (kitap == null) {
             System.out.println("HATA: " + kitapNo + " numarali kitap bulunamadi, once kitabi ekleyin!");
             return false;
@@ -131,7 +131,7 @@ public Kitap KitapBul(int kitapNo) {
             System.out.println("HATA: " + kopyaNo + " numarali kopya su an " + kopya.getDurum() + ", silinemez!");
             return false;
         }
-        Kitap kitap = KitapBul(kopya.getKitapNo());   // kopyanin ait oldugu kitap
+        Kitap kitap = kitapBul(kopya.getKitapNo());   // kopyanin ait oldugu kitap
         return kitap.kopyaCikar(kopyaNo);
     }
 
